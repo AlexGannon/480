@@ -29,7 +29,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="My Profile"
+            android:text="Browse Glasses"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
@@ -41,7 +41,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="My Profile"
+            android:text="About"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
@@ -53,7 +53,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="My Profile"
+            android:text="Logout"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
