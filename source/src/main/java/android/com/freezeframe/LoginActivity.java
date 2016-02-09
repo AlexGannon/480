@@ -2,11 +2,13 @@ package android.com.freezeframe;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     Button button = null;
     TextView registerTv, forgotTv = null;
     EditText editTextPassword, editTextUsername = null;
+    CheckBox checkBox = null;
     static int loginAttempts = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
 
         button = (Button) findViewById(R.id.button);
         registerTv = (TextView) findViewById(R.id.register);
+
+        checkBox = (CheckBox) findViewById(R.id.checkbox);
 
         editTextPassword = (EditText) findViewById(R.id.password);
         editTextUsername = (EditText) findViewById(R.id.username);
@@ -142,6 +147,11 @@ public class LoginActivity extends AppCompatActivity {
         {
             if(result.equals("success"))
             {
+                if(checkBox.isChecked())
+                {
+                    SharedPreferences sharedpreferences = getSharedPreferences("FreezeFramePrefs", Context.MODE_PRIVATE);
+                    sharedpreferences.edit().putString("username", editTextUsername.getText().toString()).commit();
+                }
                 Intent i = new Intent(context, MainActivity.class);
                 startActivity(i);
                 finish();

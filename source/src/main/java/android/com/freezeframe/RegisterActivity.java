@@ -205,11 +205,11 @@ public class RegisterActivity extends AppCompatActivity {
             }
             else if(result.equals("username"))
             {
-                Toast.makeText(context, "Username already in use", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Username already in usee", Toast.LENGTH_LONG).show();
             }
             else
             {
-                Toast.makeText(context, "Try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Try again. Result was: " + result, Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -1,74 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="4dp"
-    tools:context=".LoginActivity">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="6dp"
+    tools:context="LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView android:text="Username:"
+        <ImageView
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/logo"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:text="Freeze Frame"
+            android:textSize="30sp"
+            android:gravity="center"
+            android:textColor="#20B2AA"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="The easiest way to frame your face"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-thin|bold"
+            android:gravity="center"
+            android:layout_marginTop="1dp"/>
+
+
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_height="50dp"
+            android:hint="Username"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-thin"
+            android:layout_marginBottom="16dp"
             android:id="@+id/username"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" />
 
-        <TextView
-            android:text="Password:"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:layout_marginTop="6dp"
-            android:textColor="@color/colorPrimaryDark"/>
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_height="50dp"
+            android:hint="Password"
+            android:layout_marginBottom="16dp"
             android:inputType="textPassword"
             android:id="@+id/password"
+            android:fontFamily="sans-serif-thin"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$!"/>
+
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Forgot Password"
+        android:orientation="horizontal"
         android:layout_above="@+id/button"
-        android:clickable="true"
-        android:gravity="center"
-        android:layout_marginBottom="6dp"
-        android:id="@+id/forgot"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp"/>
+        android:layout_centerHorizontal="true">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkbox"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stay Signed In"/>
+    </LinearLayout>
+
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/button"
-        android:layout_above="@+id/register"
+        android:text="Sign In"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/button_selector"
-        android:textColor="@color/white"/>
+        android:id="@+id/button"/>
+
+
+
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:textSize="18sp"
-        android:layout_marginTop="4dp"
+        android:layout_height="20dp"
+        android:text="Forgot?"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/register"
-        android:clickable="true"/>
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:id="@+id/forgot"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="Register"
+        android:layout_height="20dp"
+        android:layout_above="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_horizontal"
+        android:clickable="true"
+        android:id="@+id/register"/>
+
+
+
+
 </RelativeLayout>
