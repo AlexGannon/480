@@ -1,5 +1,6 @@
 package android.com.freezeframe;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,9 +18,11 @@ public class CustomView extends View {
 
     private Bitmap mBitmap;
     private SparseArray<Face> mFaces;
+    Context context;
 
     public CustomView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
     /**
@@ -28,7 +31,7 @@ public class CustomView extends View {
     void setContent(Bitmap bitmap, SparseArray<Face> faces) {
         mBitmap = bitmap;
         mFaces = faces;
-        invalidate();
+        this.postInvalidate();
     }
 
     /**
@@ -90,11 +93,48 @@ public class CustomView extends View {
                 int cx = (int) (landmark.getPosition().x * scale);
                 int cy = (int) (landmark.getPosition().y * scale);
 
+                if(landmark.getType() == Landmark.LEFT_EYE) {
+                    GlassActivity.eyeLevelRX = cx;
+                    GlassActivity.eyeLevelRY = cy;
+                    System.out.println("The eye level is: " + cy + " The x is: " + cx);
+                    //canvas.drawCircle(cx, cy, 2, paint);
+                }
+                else if(landmark.getType() == Landmark.RIGHT_EYE)
+                {
+                    GlassActivity.eyeLevelLX = cx;
+                    GlassActivity.eyeLevelLY = cy;
+                    //canvas.drawCircle(cx, cy, 2, paint);
+                }
+                else if(landmark.getType() == Landmark.RIGHT_CHEEK)
+                {
+                    GlassActivity.cheekL = cy;
+                    //canvas.drawCircle(cx, cy, 6, paint);
+                }
+                else if(landmark.getType() == Landmark.LEFT_CHEEK)
+                {
+                    GlassActivity.cheekR = cy;
+                    //canvas.drawCircle(cx, cy, 6, paint);
+                }
 
 
-                canvas.drawCircle(cx, cy, 6, paint);
+
+
             }
         }
+        if(GlassActivity.cheekR - GlassActivity.cheekL > 15)
+        {
+            //canvas.drawCircle(GlassActivity.eyeLevelLX + ((GlassActivity.eyeLevelRX-GlassActivity.eyeLevelLX)/2), (GlassActivity.eyeLevelRY + GlassActivity.eyeLevelLY)/2, 6, paint);
+            System.out.println("Right higher");
+        }
+        else if(GlassActivity.cheekL - GlassActivity.cheekR  > 15)
+        {
+            //canvas.drawCircle(GlassActivity.eyeLevelLX + ((GlassActivity.eyeLevelRX-GlassActivity.eyeLevelLX)/2), GlassActivity.eyeLevelLY, 6, paint);
+            System.out.println("Left higher");
+        }
+
+
+        System.out.println("Calling draw frames");
+        GlassActivity.drawFrames();
 
     }
 

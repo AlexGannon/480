@@ -3,6 +3,7 @@ package android.com.freezeframe;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.google.android.gms.vision.face.FaceDetector;
 public class MainActivity extends AppCompatActivity {
     Button glassesButton, logoutButton = null;
     static FaceDetector detector = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

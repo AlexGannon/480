@@ -3,11 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GlassActivity">
+    tools:context=".GlassActivity"
+    android:background="#bedbdc">
+
 
     <android.com.freezeframe.CustomView
         android:id="@+id/customView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"/>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_centerInParent="true"
+            android:id="@+id/pro"
+            android:visibility="invisible"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Details"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_selector"
+        android:textColor="@color/white" />
 </RelativeLayout>

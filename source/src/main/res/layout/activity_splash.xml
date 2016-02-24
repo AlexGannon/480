@@ -9,8 +9,8 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="6dp"
-    tools:context="android.com.freezeframe.SplashActivity">
-
+    tools:context="android.com.freezeframe.SplashActivity"
+    android:background="@color/colorPrimaryDark">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,21 +19,12 @@
         android:layout_centerInParent="true">
 
         <ImageView
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:src="@drawable/logo"
+            android:padding="16dp"
             android:id="@+id/imageView"
-            android:layout_gravity="center_horizontal"
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Freeze Frame"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:textColor="#20B2AA"/>
-
+            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 
 
