@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... params) {
             String loginResult = "false";
-
+            System.out.println("Logging in");
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://handy-implement-94801.appspot.com/login");
 
@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
             HttpEntity entity = response.getEntity();
+                System.out.println("Response is: " + response);
             String responseString = EntityUtils.toString(entity, "UTF-8");
 
             json = new JSONObject(responseString);

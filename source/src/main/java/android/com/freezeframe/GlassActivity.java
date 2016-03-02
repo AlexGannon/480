@@ -3,10 +3,13 @@ package android.com.freezeframe;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -49,9 +52,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,7 +86,9 @@ public class GlassActivity extends AppCompatActivity {
     String mCurrentPhotoPath;
     File photoFile = null;
     boolean isFromGallery = false;
-
+    String imgPath = "";
+    SharedPreferences sharedpreferences;
+    boolean gettingImage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +100,11 @@ public class GlassActivity extends AppCompatActivity {
         pb = (ProgressBar) findViewById(R.id.pro);
         gestureDetector = new GestureDetector(
                 new SwipeGestureDetector());
-
+        sharedpreferences = getSharedPreferences("FreezeFramePrefs", Context.MODE_PRIVATE);
 
         context = this;
-
-        getImage(this);
+        //if(!gettingImage)
+            getImage(this);
     }
 
 
@@ -212,7 +220,15 @@ public class GlassActivity extends AppCompatActivity {
 
                     if (photoFile != null) {
                         System.out.println("Photo Created Successfully");
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                        Uri testUri = Uri.fromFile(photoFile);
+                        if(testUri ==  null)
+                            System.out.println("Test URI is null");
+                        else
+                            System.out.println("Test URI is NOT null");
+
+                        sharedpreferences.edit().putString("photoPath", mCurrentPhotoPath).commit();
+                        //sharedpreferences.edit().putString("gettingImage", "true").commit();
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, testUri);
                         startActivityForResult(takePictureIntent, 76);
                     }
                 }
@@ -228,10 +244,40 @@ public class GlassActivity extends AppCompatActivity {
         if(selectedImage != null) {
 
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                String myPath = getRealPathFromURI(selectedImage);
+                //BitmapFactory.decodeFile(selectedImage.getPath(), options);
+                BitmapFactory.decodeFile(myPath, options);
+                System.out.println("Image Path is: " + selectedImage.getPath());
+                int imageHeight = options.outHeight;
+                int imageWidth = options.outWidth;
+
+
+
+
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x;
+                int height = size.y;
+                System.out.println("Height: " + imageHeight + " Width: " + imageWidth);
+                System.out.println("Screen Height: " + height + " Screen Width: " + width);
+
+                if(imageHeight > 1.5 * height || imageWidth > 1.5 * width) {
+                    bitmap = readBitmap(selectedImage);
+                    System.out.println("Image Larger than this");
+                }
+                else {
+                    System.out.println("Image is Okay");
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            //bitmap = readBitmap(selectedImage);
             ExifInterface exif = null;
             File finalFile = null;
 
@@ -245,8 +291,15 @@ public class GlassActivity extends AppCompatActivity {
 
             finalFile = new File(realPath);
             }
-            else
+            else {
                 finalFile = photoFile;
+                //Insert Into Gallery
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+                values.put("_data", getRealPathFromURI(selectedImage));
+                ContentResolver cr = getContentResolver();
+                cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            }
             try {
                 exif = new ExifInterface(finalFile.toString());
             } catch (IOException e) {
@@ -327,6 +380,14 @@ public class GlassActivity extends AppCompatActivity {
             case 76:
                 if (resultCode == RESULT_OK) {
                     //selectedImage = imageReturnedIntent.getData();
+                    try {
+                        mCurrentPhotoPath = sharedpreferences.getString("photoPath", "");
+                        sharedpreferences.edit().remove("photoPath").commit();
+                        photoFile = new File(new URI(mCurrentPhotoPath));
+
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
                     if(photoFile.exists())
                     {
                         System.out.println("Photo Exists");
@@ -446,8 +507,7 @@ public class GlassActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -456,6 +516,43 @@ public class GlassActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        if(mCurrentPhotoPath == null)
+            System.out.println("Photo path is null");
+        else
+            System.out.println("photo path is NOT null");
         return image;
+    }
+
+
+    public Bitmap readBitmap(Uri selectedImage) {
+        Bitmap bm = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+        AssetFileDescriptor fileDescriptor =null;
+        try {
+            fileDescriptor = this.getContentResolver().openAssetFileDescriptor(selectedImage,"r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                bm = BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
+                fileDescriptor.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bm;
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            return contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            return cursor.getString(idx);
+        }
     }
 }
