@@ -3,103 +3,200 @@ package android.com.freezeframe;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.File;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.BitSet;
 
 public class PickGlassesActivity extends AppCompatActivity {
+    LinearLayout ll = null;
     Button button = null;
-    Uri selectedImage = null;
-    Context context = null;
-    int count = 0;
-    ProgressDialog progressDialog = null;
-    ProgressBar pb = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_glasses);
 
-        button = (Button) findViewById(R.id.button);
-        context = this;
+        //new RegisterAsyncTask().execute();
 
+        ll = (LinearLayout) findViewById(R.id.ll);
+        LinearLayout myLayout;
+        ImageView imageViewOne, imageViewTwo;
+
+        button = (Button) getLayoutInflater().inflate(R.layout.tryonbutton, null);
+        TextView tv;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+
+        for(int i = 0; i < MainActivity.frames.size(); i++)
+        {
+            myLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.frame_preview, null);
+
+            imageViewOne = (ImageView) myLayout.findViewById(R.id.imageone);
+
+            byte[] n = org.apache.commons.codec.binary.Base64.decodeBase64((MainActivity.frames.get(i).getImage()).getBytes());
+            imageViewOne.setImageBitmap(BitmapFactory.decodeByteArray(n, 0, n.length, options));
+            //imageViewOne.setImageResource(R.drawable.glasses13);
+
+
+            imageViewOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setSelected(!v.isSelected());
+                }
+            });
+
+            ll.addView(myLayout);
+        }
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(count == 0)
-                    getImage(v.getContext());
-                else
-                {
-
-
-                }
-                count++;
+                Toast.makeText(v.getContext(), "Button Clicked", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+        ll.addView(button);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
-            case 76:
-                if(resultCode == RESULT_OK){
-                    selectedImage = imageReturnedIntent.getData();
-                }
 
-                break;
-            case 79:
-                if (resultCode == RESULT_OK){
-                    selectedImage = imageReturnedIntent.getData();
-                }
-                break;
-        }
-        pb.setVisibility(View.VISIBLE);
-        Intent i = new Intent(context, GlassActivity.class);
-        i.putExtra("userImage", selectedImage.toString());
-        finish();
-        startActivity(i);
-    }
 
-    public void getImage(Context context)
+    private class RegisterAsyncTask extends AsyncTask<Void, Void, String>
     {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
-        myAlertDialog.setTitle("Pictures Option");
-        myAlertDialog.setMessage("Select Picture Mode");
 
-        myAlertDialog.setPositiveButton("Gallery", new DialogInterface.OnClickListener()
+        @Override
+        protected void onPreExecute()
         {
-            public void onClick(DialogInterface arg0, int arg1)
-            {
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto , 79);
-            }
-        });
+            System.out.println("In preExecute");
+        }
 
-        myAlertDialog.setNegativeButton("Camera", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(takePicture, 76);
+        @Override
+        protected String doInBackground(Void... params) {
+
+
+            try
+            {
+                /*
+                StringBuilder result = new StringBuilder();
+                URL url = new URL("http://handy-implement-94801.appspot.com/getglasses");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+                rd.close();
+                */
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpGet httppost = new HttpGet("http://handy-implement-94801.appspot.com/getglasses");
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity entity = response.getEntity();
+                String responseString = EntityUtils.toString(entity);
+
+
+
+                JSONObject json = null;
+                //String responseString = result.toString();
+                JSONArray jsonArray = new JSONArray(responseString);
+
+                System.out.println("The JsonArray Size Is: " + jsonArray.length());
+
+                for(int i = 0; i < jsonArray.length(); i++)
+                {
+                    json = (JSONObject) jsonArray.get(i);
+                    MainActivity.frames.add(new Eyewear(json.get("image").toString(), "name", "brand", "desc", 100.00));
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
-        myAlertDialog.show();
+
+
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String result)
+        {
+            System.out.println("In PostExecute");
+            ll = (LinearLayout) findViewById(R.id.ll);
+            LinearLayout myLayout;
+            ImageView imageViewOne, imageViewTwo;
+
+            button = (Button) getLayoutInflater().inflate(R.layout.tryonbutton, null);
+            TextView tv;
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 4;
+
+            for(int i = 0; i < MainActivity.frames.size(); i++)
+            {
+                myLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.frame_preview, null);
+
+                imageViewOne = (ImageView) myLayout.findViewById(R.id.imageone);
+
+                byte[] n = org.apache.commons.codec.binary.Base64.decodeBase64((MainActivity.frames.get(i).getImage()).getBytes());
+                imageViewOne.setImageBitmap(BitmapFactory.decodeByteArray(n, 0, n.length, options));
+                //imageViewOne.setImageResource(R.drawable.glasses13);
+
+
+                imageViewOne.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setSelected(!v.isSelected());
+                    }
+                });
+
+                ll.addView(myLayout);
+            }
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Button Clicked", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+            ll.addView(button);
+        }
     }
+
 
 
 }
