@@ -89,6 +89,7 @@ public class GlassActivity extends AppCompatActivity {
     String imgPath = "";
     SharedPreferences sharedpreferences;
     boolean gettingImage = false;
+    int framecount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -492,13 +493,25 @@ public class GlassActivity extends AppCompatActivity {
 
     public void nextPair()
     {
-        imageView.setImageResource(R.drawable.glassesten);
+        /*imageView.setImageResource(R.drawable.glassesten);
         imageView.requestLayout();
         Double height = width * .281;
         int temp = height.intValue();
         if ((height - temp) > .5)
             temp = temp + 1;
+        imageView.getLayoutParams().height = temp;*/
+
+        imageView.setImageBitmap(MainActivity.frames.get(framecount).getBitmap());
+        imageView.requestLayout();
+        Double height = width * MainActivity.frames.get(framecount).getRatio();
+        int temp = height.intValue();
+        if ((height - temp) > .5)
+            temp = temp + 1;
         imageView.getLayoutParams().height = temp;
+        framecount++;
+        framecount = framecount % MainActivity.frames.size();
+
+
     }
 
 

@@ -1,5 +1,7 @@
 package android.com.freezeframe;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,12 +36,17 @@ public class MainActivity extends AppCompatActivity {
     Button glassesButton, logoutButton, profileButton = null;
     static FaceDetector detector = null;
     static ArrayList<Eyewear> frames = new ArrayList<Eyewear>();
+    ProgressDialog progress;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progress = new ProgressDialog(this);
+
+        SharedPreferences sharedPref = getPreferences(Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = getPreferences(Activity.MODE_PRIVATE).edit();
 
         if(frames.isEmpty())
             new GetFramesAsyncTask().execute();
@@ -47,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         glassesButton = (Button) findViewById(R.id.glassesbutton);
         logoutButton = (Button) findViewById(R.id.logout);
         profileButton = (Button) findViewById(R.id.profile);
+
+
+
 
         glassesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute()
         {
             System.out.println("In preExecute");
+            progress.setMessage("Updating Inventory");
+            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progress.setCancelable(false);
+            progress.show();
         }
 
         @Override
@@ -112,10 +126,19 @@ public class MainActivity extends AppCompatActivity {
 
                 System.out.println("The JsonArray Size Is: " + jsonArray.length());
 
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 4;
+                byte[] n = null;
+
                 for(int i = 0; i < jsonArray.length(); i++)
                 {
                     json = (JSONObject) jsonArray.get(i);
-                    frames.add(new Eyewear(json.get("image").toString(), "name", "brand", "desc", 100.00));
+
+                    n = org.apache.commons.codec.binary.Base64.decodeBase64(((String)json.get("image")).getBytes());
+
+                    frames.add(new Eyewear(BitmapFactory.decodeByteArray(n, 0, n.length, options), Double.parseDouble((String) json.get("ratio"))));
+                    System.out.println(json.get("ratio"));
+                    //frames.add(new Eyewear(json.get("image").toString(), "name", "brand", "desc", 100.00));
                 }
 
             } catch (JSONException e) {
@@ -131,7 +154,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result)
         {
+            progress.cancel();
             System.out.println("DONE HERE");
+
         }
     }
 

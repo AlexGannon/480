@@ -3,19 +3,23 @@ package android.com.freezeframe;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -43,53 +47,24 @@ import java.util.BitSet;
 public class PickGlassesActivity extends AppCompatActivity {
     LinearLayout ll = null;
     Button button = null;
+    ProgressBar pb = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_glasses);
 
+
+        pb = (ProgressBar) findViewById(R.id.progress);
         //new RegisterAsyncTask().execute();
 
-        ll = (LinearLayout) findViewById(R.id.ll);
-        LinearLayout myLayout;
-        ImageView imageViewOne, imageViewTwo;
+       //populateList();
+        setListTwo();
+        pb.setVisibility(View.GONE);
 
-        button = (Button) getLayoutInflater().inflate(R.layout.tryonbutton, null);
-        TextView tv;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
+        //ll.addView(button);
+        System.out.println("END HERE");
 
-        for(int i = 0; i < MainActivity.frames.size(); i++)
-        {
-            myLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.frame_preview, null);
-
-            imageViewOne = (ImageView) myLayout.findViewById(R.id.imageone);
-
-            byte[] n = org.apache.commons.codec.binary.Base64.decodeBase64((MainActivity.frames.get(i).getImage()).getBytes());
-            imageViewOne.setImageBitmap(BitmapFactory.decodeByteArray(n, 0, n.length, options));
-            //imageViewOne.setImageResource(R.drawable.glasses13);
-
-
-            imageViewOne.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    v.setSelected(!v.isSelected());
-                }
-            });
-
-            ll.addView(myLayout);
-        }
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Button Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        ll.addView(button);
     }
 
 
@@ -138,7 +113,7 @@ public class PickGlassesActivity extends AppCompatActivity {
                 for(int i = 0; i < jsonArray.length(); i++)
                 {
                     json = (JSONObject) jsonArray.get(i);
-                    MainActivity.frames.add(new Eyewear(json.get("image").toString(), "name", "brand", "desc", 100.00));
+                    //MainActivity.frames.add(new Eyewear(json.get("image").toString(), "name", "brand", "desc", 100.00));
                 }
 
             } catch (JSONException e) {
@@ -195,6 +170,92 @@ public class PickGlassesActivity extends AppCompatActivity {
 
             ll.addView(button);
         }
+    }
+
+    public void populateList()
+    {
+        ll = (LinearLayout) findViewById(R.id.ll);
+        LinearLayout myLayout;
+        ImageView imageViewOne, imageViewTwo;
+
+        button = (Button) getLayoutInflater().inflate(R.layout.tryonbutton, null);
+        TextView tv;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap bitmap = null;
+        options.inMutable = true;
+        options.inSampleSize = 8;
+
+
+        byte[] n = null;
+        org.apache.commons.codec.binary.Base64 base64= new org.apache.commons.codec.binary.Base64();
+        System.out.println("START HERE");
+
+        for(int i = 0; i < MainActivity.frames.size(); i++)
+        {
+            myLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.frame_preview, null);
+
+            imageViewOne = (ImageView) myLayout.findViewById(R.id.imageone);
+
+            n = base64.decodeBase64((MainActivity.frames.get(i).getImage()).getBytes());
+            bitmap = BitmapFactory.decodeByteArray(n, 0, n.length, options);
+            imageViewOne.setImageBitmap(bitmap);
+            //imageViewOne.setImageResource(R.drawable.glasses13);
+
+
+            imageViewOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setSelected(!v.isSelected());
+                }
+            });
+            ll.addView(myLayout);
+        }
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "Button Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void setListTwo()
+    {
+        ll = (LinearLayout) findViewById(R.id.ll);
+        LinearLayout myLayout;
+        ImageView imageViewOne, imageViewTwo;
+
+        button = (Button) getLayoutInflater().inflate(R.layout.tryonbutton, null);
+        System.out.println("START HERE");
+
+        for(int i = 0; i < MainActivity.frames.size(); i++)
+        {
+            myLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.frame_preview, null);
+
+            imageViewOne = (ImageView) myLayout.findViewById(R.id.imageone);
+
+
+            imageViewOne.setImageBitmap(MainActivity.frames.get(i).getBitmap());
+            //imageViewOne.setImageResource(R.drawable.glasses13);
+
+
+            imageViewOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setSelected(!v.isSelected());
+                }
+            });
+            ll.addView(myLayout);
+        }
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "Button Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ll.addView(button);
     }
 
 
