@@ -1,0 +1,184 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    tools:context="android.com.freezeframe.DetailActivity"
+    android:background="@color/white">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/glasses13"
+        android:scaleType="fitStart"
+        android:adjustViewBounds="true"
+        android:id="@+id/image"
+        android:paddingRight="2dp"
+        android:paddingLeft="2dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:background="#ffffff"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d4d3d3"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/image"
+        android:id="@+id/view1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/view1"
+        android:id="@+id/header"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/brand"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="Ray-Ban"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:gravity="center_horizontal"
+            android:textAllCaps="true"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:id="@+id/price"
+            android:text="$599"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d4d3d3"
+        android:layout_below="@+id/header"
+        android:id="@+id/line2"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_above="@+id/button"
+        android:layout_marginLeft="6dp"
+        android:paddingLeft="10dp"
+        android:layout_below="@+id/line2"
+        android:layout_marginRight="6dp"
+        android:id="@+id/ll">
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary_darker"
+                android:text="Model:"
+                android:layout_marginRight="10dp"
+                android:textSize="25dp"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/model"
+                android:text="ThisModel"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary_darker"
+                android:text="Shape:"
+                android:layout_marginRight="10dp"
+                android:textSize="25dp"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/shape"
+                android:text="Oval"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d4d3d3"
+            android:layout_marginTop="2dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_darker"
+            android:text="Description:"
+            android:textSize="25dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="2dp"/>
+
+        <TextView
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="15sp"
+            android:maxLines="7"
+            android:scrollbars="vertical"
+            android:id="@+id/desc"
+            android:text="Versace mixes theatrical drama with elegant couture for a look that's edgy and lux. The Rock Icons Greca collection brings the classic Greek key motif to designer eyewear. These transparent green eyeglasses give the rectangle an ultramodern twist. Slim temples embellished with the Greca key add a signature touch."/>
+        />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d4d3d3"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add To Cart"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_selector"
+        android:textColor="@color/white"
+        android:id="@+id/button"/>
+</RelativeLayout>

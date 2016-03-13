@@ -30,13 +30,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    Button glassesButton, logoutButton, profileButton = null;
+    Button glassesButton, logoutButton, profileButton, aboutButton = null;
     static FaceDetector detector = null;
     static ArrayList<Eyewear> frames = new ArrayList<Eyewear>();
     ProgressDialog progress;
+    static ArrayList<Eyewear> selectedFrames = new ArrayList<Eyewear>();
+
 
 
     @Override
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         glassesButton = (Button) findViewById(R.id.glassesbutton);
         logoutButton = (Button) findViewById(R.id.logout);
         profileButton = (Button) findViewById(R.id.profile);
+        aboutButton = (Button) findViewById(R.id.about);
 
 
 
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         .setLandmarkType(FaceDetector.ALL_LANDMARKS)
                         .build();
 
-                Intent i = new Intent(v.getContext(), GlassActivity.class);
+                Intent i = new Intent(v.getContext(), PickGlassesActivity.class);
                 startActivity(i);
             }
         });
@@ -86,7 +92,15 @@ public class MainActivity extends AppCompatActivity {
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), PickGlassesActivity.class);
+                Intent i = new Intent(v.getContext(), MyProfileActivity.class);
+                startActivity(i);
+            }
+        });
+
+        aboutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), AboutActivity.class);
                 startActivity(i);
             }
         });
@@ -121,24 +135,18 @@ public class MainActivity extends AppCompatActivity {
 
 
                 JSONObject json = null;
-                //String responseString = result.toString();
+
                 JSONArray jsonArray = new JSONArray(responseString);
 
                 System.out.println("The JsonArray Size Is: " + jsonArray.length());
 
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 4;
-                byte[] n = null;
 
                 for(int i = 0; i < jsonArray.length(); i++)
                 {
                     json = (JSONObject) jsonArray.get(i);
 
-                    n = org.apache.commons.codec.binary.Base64.decodeBase64(((String)json.get("image")).getBytes());
-
-                    frames.add(new Eyewear(BitmapFactory.decodeByteArray(n, 0, n.length, options), Double.parseDouble((String) json.get("ratio"))));
-                    System.out.println(json.get("ratio"));
-                    //frames.add(new Eyewear(json.get("image").toString(), "name", "brand", "desc", 100.00));
+                    frames.add(new Eyewear(json.getString("url"), json.getString("fname"), json.getString("brand"), json.getString("about"), Double.parseDouble(json.getString("price")), Double.parseDouble(json.getString("ratio"))) );
+                    System.out.println(json.get("url"));
                 }
 
             } catch (JSONException e) {
@@ -158,6 +166,12 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("DONE HERE");
 
         }
+    }
+
+    public static double round(double value) {
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
 

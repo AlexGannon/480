@@ -3,31 +3,19 @@ package android.com.freezeframe;
 import android.graphics.Bitmap;
 
 public class Eyewear {
-    String image = "";
     String name = "", brand = "", description = "";
     double price = 0;
-    Bitmap bitmap = null;
+    String url = "";
     double ratio = 0;
 
-    public Eyewear(String image, String name, String brand, String description, double price, double ratio)
+    public Eyewear(String url, String name, String brand, String description, double price, double ratio)
     {
-        this.image = image;
+        this.url = url;
         this.name = name;
         this.brand = brand;
         this.description = description;
         this.price = price;
         this.ratio = ratio;
-    }
-
-    public Eyewear(Bitmap bitmap, double ratio)
-    {
-        this.bitmap = bitmap;
-        this.ratio = ratio;
-    }
-
-    public String getImage()
-    {
-        return image;
     }
 
     public String getName()
@@ -45,14 +33,19 @@ public class Eyewear {
         return description;
     }
 
-    public Bitmap getBitmap()
+    public String getUrl()
     {
-        return bitmap;
+        return url;
     }
 
     public double getRatio()
     {
         return ratio;
+    }
+
+    public double getPrice()
+    {
+        return price;
     }
 
 

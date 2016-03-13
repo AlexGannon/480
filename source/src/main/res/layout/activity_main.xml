@@ -19,7 +19,8 @@
             android:text="My Profile"
             android:layout_centerInParent="true"
             android:background="@drawable/button_selector"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:id="@+id/profile"/>
     </RelativeLayout>
 
 
@@ -49,7 +50,8 @@
             android:text="About"
             android:layout_centerInParent="true"
             android:background="@drawable/button_selector"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:id="@+id/about"/>
     </RelativeLayout>
 
     <RelativeLayout

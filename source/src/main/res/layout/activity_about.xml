@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:paddingLeft="0dp"
+android:paddingRight="0dp"
+android:paddingTop="2dp"
+android:paddingBottom="0dp"
+tools:context="android.com.freezeframe.AboutActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/faded6"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Freeze Frame was created to provide the user with a way to “try on” multiple pairs of glasses without having to step foot into a store. The user takes a straight forward picture of their face and then our software custom fits our inventory of glasses to fit the users face as if they were in a store trying on the frames. Once the user finds a frame he/she likes, the user can add the frames to cart for checkout and purchase. The user must know their prescription if they wish to purchase from our store."
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/textView1"
+                android:layout_marginTop="5dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/aluminum"
+                android:text="Developed by Liam Plefka, Alex Gannon, Justin Yu, Steven Murtaugh, and Evan Kathawa"
+                android:textSize="16dp"
+                android:id="@+id/textView2"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,8 +1,6 @@
 package android.com.freezeframe;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,7 +11,6 @@ import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.media.ExifInterface;
@@ -37,31 +34,16 @@ import android.widget.Toast;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class GlassActivity extends AppCompatActivity {
     static int eyeLevelLX;
@@ -77,7 +59,6 @@ public class GlassActivity extends AppCompatActivity {
     static int cheekR, cheekL;
     Bitmap bitmap;
     Uri selectedImage = null;
-    Button button = null;
     ProgressBar pb = null;
     RegisterAsyncTask rtask;
     boolean foundFace = false;
@@ -90,15 +71,37 @@ public class GlassActivity extends AppCompatActivity {
     SharedPreferences sharedpreferences;
     boolean gettingImage = false;
     int framecount = 0;
+    Eyewear selectedFrame = null;
+    Button button = null;
+    DecimalFormat precision = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glass);
 
+        precision = new DecimalFormat("#.00");
 
         imageView = (ImageView) findViewById(R.id.imageView);
         pb = (ProgressBar) findViewById(R.id.pro);
+
+        selectedFrame = MainActivity.selectedFrames.get(0);
+        framecount = (framecount++) % MainActivity.selectedFrames.size();
+
+        button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), DetailActivity.class);
+                i.putExtra("brand", selectedFrame.getBrand());
+                i.putExtra("model", selectedFrame.getName());
+                i.putExtra("price", "" + precision.format(selectedFrame.getPrice()));
+                i.putExtra("desc", selectedFrame.getDescription());
+                i.putExtra("image", selectedFrame.getUrl());
+                startActivity(i);
+            }
+        });
         gestureDetector = new GestureDetector(
                 new SwipeGestureDetector());
         sharedpreferences = getSharedPreferences("FreezeFramePrefs", Context.MODE_PRIVATE);
@@ -110,7 +113,8 @@ public class GlassActivity extends AppCompatActivity {
 
 
     public static void drawFrames() {
-        imageView.setImageResource(R.drawable.glasseseleven);
+        //imageView.setImageResource(R.drawable.glasseseleven);
+        Picasso.with(context).load(MainActivity.selectedFrames.get(0).getUrl()).into(imageView);
         imageView.requestLayout();
         int center = eyeLevelLX + ((eyeLevelRX - eyeLevelLX) / 2);
         int w = ((eyeLevelRX - eyeLevelLX) / 2) * 4;
@@ -189,6 +193,8 @@ public class GlassActivity extends AppCompatActivity {
 
             //params.setMargins(center - (w / 2), ((eyeLevelLY + eyeLevelRY) / 2) - ((Double) (tempHeight * .70)).intValue(), 0, 0);
         }
+        setFirstFrame();
+
     }
 
 
@@ -501,17 +507,17 @@ public class GlassActivity extends AppCompatActivity {
             temp = temp + 1;
         imageView.getLayoutParams().height = temp;*/
 
-        imageView.setImageBitmap(MainActivity.frames.get(framecount).getBitmap());
+        //imageView.setImageBitmap(MainActivity.frames.get(framecount).getBitmap());
+        selectedFrame = MainActivity.selectedFrames.get(framecount);
+        Picasso.with(this).load(selectedFrame.getUrl()).into(imageView);
         imageView.requestLayout();
-        Double height = width * MainActivity.frames.get(framecount).getRatio();
+        Double height = width * selectedFrame.getRatio();
         int temp = height.intValue();
         if ((height - temp) > .5)
             temp = temp + 1;
         imageView.getLayoutParams().height = temp;
         framecount++;
-        framecount = framecount % MainActivity.frames.size();
-
-
+        framecount = framecount % MainActivity.selectedFrames.size();
     }
 
 
@@ -567,5 +573,16 @@ public class GlassActivity extends AppCompatActivity {
             int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
             return cursor.getString(idx);
         }
+    }
+
+    public static void setFirstFrame()
+    {
+        Picasso.with(context).load(MainActivity.selectedFrames.get(0).getUrl()).into(imageView);
+        imageView.requestLayout();
+        Double height = width * MainActivity.selectedFrames.get(0).getRatio();
+        int temp = height.intValue();
+        if ((height - temp) > .5)
+            temp = temp + 1;
+        imageView.getLayoutParams().height = temp;
     }
 }
