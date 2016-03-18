@@ -198,18 +198,18 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
             else if(result.equals("notValidEmail"))
-                Toast.makeText(context, "Please Enter Valid a Email", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Please Enter Valid Email", Toast.LENGTH_LONG).show();
             else if(result.equals("email"))
             {
-                Toast.makeText(context, "Email already in use", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Email Already In Use", Toast.LENGTH_LONG).show();
             }
             else if(result.equals("username"))
             {
-                Toast.makeText(context, "Username already in usee", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Username Already In Use", Toast.LENGTH_LONG).show();
             }
             else
             {
-                Toast.makeText(context, "Try again. Result was: " + result, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Error Occurred: " + result, Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -46,10 +46,12 @@ public class PickGlassesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
+        MainActivity.selectedFrames.clear();
 
         ll = (LinearLayout) findViewById(R.id.ll);
 
         LinearLayout temp = null;
+
         for(int i = 0; i < MainActivity.frames.size(); i++)
         {
             temp = (LinearLayout) getLayoutInflater().inflate(R.layout.frame_preview, null);
@@ -84,7 +86,7 @@ public class PickGlassesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(count == 0)
                 {
-                    Toast.makeText(v.getContext(), "Selected At Least One Frame", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), "Select At Least One Frame", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Intent i = new Intent(v.getContext(), GlassActivity.class);

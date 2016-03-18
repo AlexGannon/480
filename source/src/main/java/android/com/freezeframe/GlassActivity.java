@@ -70,29 +70,30 @@ public class GlassActivity extends AppCompatActivity {
     String imgPath = "";
     SharedPreferences sharedpreferences;
     boolean gettingImage = false;
-    int framecount = 0;
+    static int framecount = 0;
     Eyewear selectedFrame = null;
     Button button = null;
     DecimalFormat precision = null;
+    static boolean resuming = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glass);
-
+        resuming = false;
         precision = new DecimalFormat("#.00");
 
         imageView = (ImageView) findViewById(R.id.imageView);
         pb = (ProgressBar) findViewById(R.id.pro);
 
         selectedFrame = MainActivity.selectedFrames.get(0);
-        framecount = (framecount++) % MainActivity.selectedFrames.size();
 
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resuming = true;
                 Intent i = new Intent(v.getContext(), DetailActivity.class);
                 i.putExtra("brand", selectedFrame.getBrand());
                 i.putExtra("model", selectedFrame.getName());
@@ -193,7 +194,11 @@ public class GlassActivity extends AppCompatActivity {
 
             //params.setMargins(center - (w / 2), ((eyeLevelLY + eyeLevelRY) / 2) - ((Double) (tempHeight * .70)).intValue(), 0, 0);
         }
-        setFirstFrame();
+        if(resuming)
+            setResumedFrame();
+        else
+            setFirstFrame();
+
 
     }
 
@@ -424,6 +429,7 @@ public class GlassActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... params) {
 
+
             setGlasses();
             return "";
         }
@@ -436,6 +442,7 @@ public class GlassActivity extends AppCompatActivity {
                 pb.setVisibility(View.INVISIBLE);
                 Toast.makeText(context, "Face Not Found", Toast.LENGTH_SHORT).show();
                 getImage(context);
+                Toast.makeText(context, "In On Post Execute", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -454,6 +461,7 @@ public class GlassActivity extends AppCompatActivity {
     }
 
     private void onLeftSwipe() {
+        nextPairLeft();
     }
 
     private void onRightSwipe() {
@@ -499,15 +507,8 @@ public class GlassActivity extends AppCompatActivity {
 
     public void nextPair()
     {
-        /*imageView.setImageResource(R.drawable.glassesten);
-        imageView.requestLayout();
-        Double height = width * .281;
-        int temp = height.intValue();
-        if ((height - temp) > .5)
-            temp = temp + 1;
-        imageView.getLayoutParams().height = temp;*/
-
-        //imageView.setImageBitmap(MainActivity.frames.get(framecount).getBitmap());
+        framecount++;
+        framecount = framecount % MainActivity.selectedFrames.size();
         selectedFrame = MainActivity.selectedFrames.get(framecount);
         Picasso.with(this).load(selectedFrame.getUrl()).into(imageView);
         imageView.requestLayout();
@@ -516,8 +517,36 @@ public class GlassActivity extends AppCompatActivity {
         if ((height - temp) > .5)
             temp = temp + 1;
         imageView.getLayoutParams().height = temp;
-        framecount++;
-        framecount = framecount % MainActivity.selectedFrames.size();
+    }
+
+    public void nextPairLeft()
+    {
+        framecount--;
+        if(framecount == -1)
+            framecount = MainActivity.selectedFrames.size()-1;
+        selectedFrame = MainActivity.selectedFrames.get(framecount);
+        Picasso.with(this).load(selectedFrame.getUrl()).into(imageView);
+        imageView.requestLayout();
+        Double height = width * selectedFrame.getRatio();
+        int temp = height.intValue();
+        if ((height - temp) > .5)
+            temp = temp + 1;
+        imageView.getLayoutParams().height = temp;
+    }
+
+    public void drawPairGiven()
+    {
+       if(!(framecount < MainActivity.selectedFrames.size()))
+           framecount = 0;
+
+        selectedFrame = MainActivity.selectedFrames.get(framecount);
+        Picasso.with(this).load(selectedFrame.getUrl()).into(imageView);
+        imageView.requestLayout();
+        Double height = width * selectedFrame.getRatio();
+        int temp = height.intValue();
+        if ((height - temp) > .5)
+            temp = temp + 1;
+        imageView.getLayoutParams().height = temp;
     }
 
 
@@ -584,5 +613,24 @@ public class GlassActivity extends AppCompatActivity {
         if ((height - temp) > .5)
             temp = temp + 1;
         imageView.getLayoutParams().height = temp;
+    }
+
+    public static void setResumedFrame()
+    {
+        Picasso.with(context).load(MainActivity.selectedFrames.get(framecount).getUrl()).into(imageView);
+        imageView.requestLayout();
+        Double height = width * MainActivity.selectedFrames.get(framecount).getRatio();
+        int temp = height.intValue();
+        if ((height - temp) > .5)
+            temp = temp + 1;
+        imageView.getLayoutParams().height = temp;
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        //drawPairGiven();
+
     }
 }
