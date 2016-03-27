@@ -58,11 +58,13 @@
         </activity>
         <activity android:name=".PickGlassesActivity" >
         </activity>
-        <activity android:name=".MyProfileActivity" >
+        <activity android:name=".MyProfileActivity"  android:windowSoftInputMode="adjustPan">
         </activity>
         <activity android:name=".DetailActivity" >
         </activity>
         <activity android:name=".AboutActivity" >
+        </activity>
+        <activity android:name=".ShoppingCartActivity">
         </activity>
     </application>
 

@@ -39,6 +39,22 @@
             android:textColor="@color/white"/>
     </RelativeLayout>
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cart"
+            android:layout_centerInParent="true"
+            android:background="@drawable/button_selector"
+            android:textColor="@color/white"
+            android:id="@+id/cart"/>
+    </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

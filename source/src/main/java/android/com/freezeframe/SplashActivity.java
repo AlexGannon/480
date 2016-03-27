@@ -43,6 +43,7 @@ public class SplashActivity extends AppCompatActivity {
                 else
                 {
                     Intent i = new Intent(context, MainActivity.class);
+                    i.putExtra("isLoggedIn", "true");
                     startActivity(i);
                     finish();
                 }

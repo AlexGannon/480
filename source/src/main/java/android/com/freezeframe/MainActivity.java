@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.face.FaceDetector;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -30,17 +32,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    Button glassesButton, logoutButton, profileButton, aboutButton = null;
+    Button glassesButton, logoutButton, profileButton, aboutButton, cartButton = null;
     static FaceDetector detector = null;
     static ArrayList<Eyewear> frames = new ArrayList<Eyewear>();
     ProgressDialog progress;
     static ArrayList<Eyewear> selectedFrames = new ArrayList<Eyewear>();
+    static Cart shoppingCart;
+    static User currentUser;
 
 
 
@@ -50,9 +55,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         progress = new ProgressDialog(this);
 
-        SharedPreferences sharedPref = getPreferences(Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = getPreferences(Activity.MODE_PRIVATE).edit();
-
         if(frames.isEmpty())
             new GetFramesAsyncTask().execute();
 
@@ -60,9 +62,32 @@ public class MainActivity extends AppCompatActivity {
         logoutButton = (Button) findViewById(R.id.logout);
         profileButton = (Button) findViewById(R.id.profile);
         aboutButton = (Button) findViewById(R.id.about);
+        cartButton = (Button) findViewById(R.id.cart);
 
-
-
+        setShoppingCart(this);
+        Intent i = getIntent();
+        if(i.hasExtra("isLoggedIn"))
+        {
+            SharedPreferences sp = getSharedPreferences("FreezeFramePrefs", Context.MODE_PRIVATE);
+            Gson gson = new Gson();
+            if (sp.contains("userInfo")) {
+                String json = sp.getString("userInfo", null);
+                currentUser = gson.fromJson(json, User.class);
+            }
+        }
+        else
+        {
+            Gson gson = new Gson();
+            SharedPreferences sp = getSharedPreferences("FreezeFramePrefs", Context.MODE_PRIVATE);
+            String username = i.getStringExtra("username");
+            String email = i.getStringExtra("email");
+            String name = i.getStringExtra("name");
+            String question = i.getStringExtra("question");
+            String answer = i.getStringExtra("answer");
+            currentUser = new User(username, "", question, answer, email, name);
+            String json = gson.toJson(currentUser);
+            sp.edit().putString("userInfo", json).commit();
+        }
 
         glassesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +126,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), AboutActivity.class);
+                startActivity(i);
+            }
+        });
+
+        cartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), ShoppingCartActivity.class);
                 startActivity(i);
             }
         });
@@ -145,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
                 {
                     json = (JSONObject) jsonArray.get(i);
 
-                    frames.add(new Eyewear(json.getString("url"), json.getString("fname"), json.getString("brand"), json.getString("about"), Double.parseDouble(json.getString("price")), Double.parseDouble(json.getString("ratio"))) );
-                    System.out.println(json.get("url"));
+                    frames.add(new Eyewear(json.getString("url"), json.getString("fname"), json.getString("brand"), json.getString("about"), Double.parseDouble(json.getString("price")), Double.parseDouble(json.getString("ratio")), json.getString("key")) );
+                    System.out.println(json.getString("key"));
                 }
 
             } catch (JSONException e) {
@@ -175,6 +208,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
+    public void setShoppingCart(Context context)
+    {
+        SharedPreferences sp;
+        Gson gson = new Gson();
+        sp = context.getSharedPreferences("FreezeFrameShoppingCart", Context.MODE_PRIVATE);
+        if (sp.contains("cart")) {
+            String json = sp.getString("cart", null);
+             shoppingCart = gson.fromJson(json, Cart.class);
+            if(shoppingCart == null)
+                shoppingCart = new Cart();
+            System.out.println("Shopping cart not empty");
+        }
+        else {
+            shoppingCart = new Cart();
+            System.out.println("Shopping Cart Is Empty");
+        }
+    }
 }

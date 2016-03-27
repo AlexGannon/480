@@ -95,11 +95,12 @@ public class GlassActivity extends AppCompatActivity {
             public void onClick(View v) {
                 resuming = true;
                 Intent i = new Intent(v.getContext(), DetailActivity.class);
-                i.putExtra("brand", selectedFrame.getBrand());
-                i.putExtra("model", selectedFrame.getName());
-                i.putExtra("price", "" + precision.format(selectedFrame.getPrice()));
-                i.putExtra("desc", selectedFrame.getDescription());
-                i.putExtra("image", selectedFrame.getUrl());
+              //  i.putExtra("brand", selectedFrame.getBrand());
+                //i.putExtra("model", selectedFrame.getName());
+                //i.putExtra("price", "" + precision.format(selectedFrame.getPrice()));
+                //i.putExtra("desc", selectedFrame.getDescription());
+                //i.putExtra("image", selectedFrame.getUrl());
+                i.putExtra("frame", selectedFrame);
                 startActivity(i);
             }
         });

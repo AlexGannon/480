@@ -45,7 +45,7 @@ public class PickGlassesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_profile);
+        setContentView(R.layout.activity_pick_glasses);
         MainActivity.selectedFrames.clear();
 
         ll = (LinearLayout) findViewById(R.id.ll);

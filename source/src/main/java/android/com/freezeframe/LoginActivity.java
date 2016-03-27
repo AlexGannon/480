@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText editTextPassword, editTextUsername = null;
     CheckBox checkBox = null;
     static int loginAttempts = 0;
+    String userEmail, fullName, question, answer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,9 +116,6 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-
-            // Execute HTTP Post Request
-
             response = httpclient.execute(httppost);
 
 
@@ -128,6 +126,13 @@ public class LoginActivity extends AppCompatActivity {
 
             json = new JSONObject(responseString);
             loginResult = json.get("reson").toString();
+                if(loginResult.equals("success"))
+                {
+                    userEmail = json.get("email").toString();
+                    fullName = json.get("name").toString();
+                    question = json.get("question").toString();
+                    answer = json.get("answer").toString();
+                }
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -154,6 +159,11 @@ public class LoginActivity extends AppCompatActivity {
                     sharedpreferences.edit().putString("username", editTextUsername.getText().toString()).commit();
                 }
                 Intent i = new Intent(context, MainActivity.class);
+                i.putExtra("username", username);
+                i.putExtra("email", userEmail);
+                i.putExtra("name", fullName);
+                i.putExtra("question", question);
+                i.putExtra("answer", answer);
                 startActivity(i);
                 finish();
             }

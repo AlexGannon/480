@@ -194,6 +194,12 @@ public class RegisterActivity extends AppCompatActivity {
             if(result.equals("success"))
             {
                 Intent i = new Intent(context, MainActivity.class);
+                i.putExtra("username", username);
+                i.putExtra("email", email);
+                i.putExtra("name", fname + " " + lname);
+                i.putExtra("question", secQuestion);
+                i.putExtra("answer", secAnswer);
+
                 startActivity(i);
                 finish();
             }
