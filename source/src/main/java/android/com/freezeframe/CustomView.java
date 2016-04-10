@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.Landmark;
@@ -55,9 +56,61 @@ public class CustomView extends View {
         double viewHeight = canvas.getHeight();
         double imageWidth = mBitmap.getWidth();
         double imageHeight = mBitmap.getHeight();
+
         double scale = Math.min(viewWidth / imageWidth, viewHeight / imageHeight);
 
-        Rect destBounds = new Rect(0, 0, (int)(imageWidth * scale), (int)(imageHeight * scale));
+
+
+
+
+        System.out.println("The scale is: " + scale);
+        if(imageWidth > viewWidth)
+            scale = viewWidth/imageWidth;
+        else
+            scale = 1;
+
+         double tempWidth = imageWidth * scale;
+        double tempHeight = imageHeight * scale;
+
+        int scalledWidth;
+        int scalledHeight;
+
+        //Round up the width
+        if(tempWidth - ((int)tempWidth) >= .500)
+            scalledWidth = ((int)tempWidth) + 1;
+        else
+        scalledWidth = (int) tempWidth;
+
+        //Round up the height
+        if(tempHeight - ((int) tempHeight) >= .500)
+            scalledHeight = ((int) tempHeight) + 1;
+        else
+        scalledHeight = (int) tempHeight;
+
+
+        if(scalledWidth < viewWidth)
+        {
+            scale = viewWidth / scalledWidth;
+
+            tempWidth = imageWidth * scale;
+            tempHeight = imageHeight * scale;
+
+            //Round up the width
+            if(tempWidth - ((int)tempWidth) >= .500)
+                scalledWidth = ((int)tempWidth) + 1;
+            else
+                scalledWidth = (int) tempWidth;
+
+            //Round up the height
+            if(tempHeight - ((int) tempHeight) >= .500)
+                scalledHeight = ((int) tempHeight) + 1;
+            else
+                scalledHeight = (int) tempHeight;
+        }
+
+        //Rect destBounds = new Rect(0, 0, (int)(imageWidth * scale), (int)(imageHeight * scale));
+        Rect destBounds = new Rect(0, 0, scalledWidth, scalledHeight);
+
         canvas.drawBitmap(mBitmap, null, destBounds, null);
         return scale;
     }

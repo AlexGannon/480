@@ -29,12 +29,15 @@ public class ShoppingCartActivity extends AppCompatActivity {
     Eyewear frame;
     Button button = null;
     ArrayList<Eyewear> temp = null;
+    TextView priceTv = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
 
+
         final DecimalFormat precision = new DecimalFormat("#.00");
+
         root = (LinearLayout) findViewById(R.id.root);
         LinearLayout item = null;
         ImageView preview = null;
@@ -113,14 +116,16 @@ public class ShoppingCartActivity extends AppCompatActivity {
                                             if (newAmount == 0) {
                                                 root.removeView(v);
 
-                                                if (root.getChildCount() == 0) {
+                                                if (root.getChildCount() == 1) {
                                                     button.setVisibility(View.INVISIBLE);
+                                                    root.removeAllViews();
                                                     emptyTv.setVisibility(View.VISIBLE);
                                                     MainActivity.shoppingCart.removeItem(myKey);
                                                     saveCart(v.getContext());
                                                     Toast.makeText(v.getContext(), "Item Removed", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     MainActivity.shoppingCart.removeItem(myKey);
+                                                    priceTv.setText("$" + precision.format(MainActivity.shoppingCart.getPrice()));
                                                     saveCart(v.getContext());
                                                     Toast.makeText(v.getContext(), "Item Removed", Toast.LENGTH_SHORT).show();
                                                 }
@@ -128,6 +133,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                                                 qtyTv.setText("x " + newAmount);
                                                 priceEt.setText("$" + precision.format((Double.parseDouble(priceEt.getText().toString().substring(1, priceEt.length()))) - (myPrice)));
                                                 MainActivity.shoppingCart.removeItem(myKey);
+                                                priceTv.setText("$" + precision.format(MainActivity.shoppingCart.getPrice()));
                                                 saveCart(v.getContext());
                                                 Toast.makeText(v.getContext(), "Item Removed", Toast.LENGTH_SHORT).show();
                                             }
@@ -153,7 +159,22 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     button.setVisibility(View.INVISIBLE);
                 }
             }
+            if(cart.size() != 0) {
+                LinearLayout priceLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.totalpricelayout, null);
+                priceTv = (TextView) priceLayout.findViewById(R.id.price);
+                priceTv.setText("$" + precision.format(MainActivity.shoppingCart.getPrice()));
+                if (temp.size() != 0)
+                    root.addView(priceLayout);
+            }
         }
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), ShippingActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     public void saveCart(Context context)

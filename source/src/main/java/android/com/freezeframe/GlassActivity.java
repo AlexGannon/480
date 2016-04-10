@@ -83,6 +83,7 @@ public class GlassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_glass);
         resuming = false;
         precision = new DecimalFormat("#.00");
+        framecount = 0;
 
         imageView = (ImageView) findViewById(R.id.imageView);
         pb = (ProgressBar) findViewById(R.id.pro);
@@ -95,11 +96,6 @@ public class GlassActivity extends AppCompatActivity {
             public void onClick(View v) {
                 resuming = true;
                 Intent i = new Intent(v.getContext(), DetailActivity.class);
-              //  i.putExtra("brand", selectedFrame.getBrand());
-                //i.putExtra("model", selectedFrame.getName());
-                //i.putExtra("price", "" + precision.format(selectedFrame.getPrice()));
-                //i.putExtra("desc", selectedFrame.getDescription());
-                //i.putExtra("image", selectedFrame.getUrl());
                 i.putExtra("frame", selectedFrame);
                 startActivity(i);
             }
@@ -110,7 +106,7 @@ public class GlassActivity extends AppCompatActivity {
 
         context = this;
         //if(!gettingImage)
-            getImage(this);
+        getImage(this);
     }
 
 
@@ -137,17 +133,6 @@ public class GlassActivity extends AppCompatActivity {
         //if (cheekL - cheekR > 6)
         if(eyeLevelLY - eyeLevelRY > 6){
             System.out.println("Here at left higher");
-           /* //imageView.setPivotX(center);
-            int heightDiff = cheekL - cheekR;
-            int widthApart = eyeLevelRX - eyeLevelLX;
-            System.out.println("Width: " + widthApart + " height: " + heightDiff);
-            double rotate = Math.atan(((float)heightDiff) / widthApart);
-            rotate = Math.toDegrees(rotate);
-            System.out.println("Rotate by: " + rotate + " : " + (360 - rotate));
-            imageView.setRotation(360 - (float)rotate);
-            params.setMargins(center - (w/2), ((eyeLevelRY + eyeLevelLY)/2) - ((Double) (tempHeight * .70)).intValue(), 0, 0);
-        */
-            //int heightDiff = cheekL - cheekR;
             int heightDiff = cheekL - cheekR;
             int widthApart = eyeLevelRX - eyeLevelLX;
             double rotate = Math.atan(((float) heightDiff) / widthApart);
@@ -156,9 +141,6 @@ public class GlassActivity extends AppCompatActivity {
             imageView.setRotation(360 - (float) rotate);
 
             Double offby = w - (w * Math.cos(Math.toRadians(rotate)));
-            //Double val = eyeLevelLX + ((eyeLevelRX-eyeLevelRX)/2.0) - (w/4.0) - offby;
-            //Double val = eyeLevelLX + ((eyeLevelRX-eyeLevelRX)/2.0) - (w * Math.sin(90 - rotate))/4;
-            //Double val = eyeLevelLX + ((eyeLevelRX-eyeLevelLX)/2.0) - ((w * Math.cos(rotate))/2.0) - offby;
             System.out.println("The new height is: " + ((w * Math.cos(rotate))) + " The overall width is: " + w + " Cos(Theta) is: " + Math.cos(Math.toRadians(rotate)));
             Double val = eyeLevelLX + ((eyeLevelRX - eyeLevelLX) / 2.0) - ((w * Math.cos(Math.toRadians(rotate))) / 2.0) - offby;
             int roundedVal;
@@ -171,7 +153,6 @@ public class GlassActivity extends AppCompatActivity {
         //else if (cheekR - cheekL > 6)
         else if(eyeLevelRY - eyeLevelLY > 6){
             System.out.println("Here at Right higher");
-            //int heightDiff = cheekR - cheekL;
             int heightDiff = eyeLevelRY - eyeLevelLY;
             int widthApart = eyeLevelRX - eyeLevelLX;
             double rotate = Math.atan(((float) heightDiff) / widthApart);
@@ -180,8 +161,6 @@ public class GlassActivity extends AppCompatActivity {
             imageView.setRotation((float) rotate);
 
             Double offby = w - w * Math.sin(Math.toRadians(90 - rotate));
-            //Double val = eyeLevelLX + ((eyeLevelRX-eyeLevelRX)/2.0) - (w/4.0) - offby;
-            //Double val = eyeLevelLX + ((eyeLevelRX-eyeLevelRX)/2.0) - (w * Math.sin(90 - rotate))/4;
 
             Double val = eyeLevelLX + ((eyeLevelRX - eyeLevelLX) / 2.0) - ((w * Math.sin(Math.toRadians(90 - rotate))) / 2.0) - offby;
             System.out.println("The left x is: " + eyeLevelLX + " Margin is: " + val + " offby is: " + offby);
@@ -191,9 +170,6 @@ public class GlassActivity extends AppCompatActivity {
             else
                 roundedVal = val.intValue();
             params.setMargins(roundedVal, ((eyeLevelLY + eyeLevelRY) / 2) - ((Double) (tempHeight * .80)).intValue(), 0, 0);
-
-
-            //params.setMargins(center - (w / 2), ((eyeLevelLY + eyeLevelRY) / 2) - ((Double) (tempHeight * .70)).intValue(), 0, 0);
         }
         if(resuming)
             setResumedFrame();
@@ -295,14 +271,14 @@ public class GlassActivity extends AppCompatActivity {
             File finalFile = null;
 
             if(isFromGallery) {
-            String realPath;
+                String realPath;
 
-            Cursor cursor = getContentResolver().query(selectedImage, null, null, null, null);
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            realPath = cursor.getString(idx);
+                Cursor cursor = getContentResolver().query(selectedImage, null, null, null, null);
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                realPath = cursor.getString(idx);
 
-            finalFile = new File(realPath);
+                finalFile = new File(realPath);
             }
             else {
                 finalFile = photoFile;
@@ -419,9 +395,9 @@ public class GlassActivity extends AppCompatActivity {
                 break;
         }
 
-            pb.setVisibility(View.VISIBLE);
-            rtask = new RegisterAsyncTask();
-            rtask.execute();
+        pb.setVisibility(View.VISIBLE);
+        rtask = new RegisterAsyncTask();
+        rtask.execute();
 
     }
 
@@ -537,8 +513,8 @@ public class GlassActivity extends AppCompatActivity {
 
     public void drawPairGiven()
     {
-       if(!(framecount < MainActivity.selectedFrames.size()))
-           framecount = 0;
+        if(!(framecount < MainActivity.selectedFrames.size()))
+            framecount = 0;
 
         selectedFrame = MainActivity.selectedFrames.get(framecount);
         Picasso.with(this).load(selectedFrame.getUrl()).into(imageView);
@@ -574,10 +550,26 @@ public class GlassActivity extends AppCompatActivity {
 
 
     public Bitmap readBitmap(Uri selectedImage) {
+
+        AssetFileDescriptor fileDescriptor = null;
+        try {
+            fileDescriptor = this.getContentResolver().openAssetFileDescriptor(selectedImage,"r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         Bitmap bm = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 2;
-        AssetFileDescriptor fileDescriptor =null;
+        options.inSampleSize = 1;
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
+        options.inSampleSize = calculateInSampleSize(options);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        System.out.println("The InSampleSize is: " + options.inSampleSize);
+
+
+        fileDescriptor = null;
         try {
             fileDescriptor = this.getContentResolver().openAssetFileDescriptor(selectedImage,"r");
         } catch (FileNotFoundException e) {
@@ -585,7 +577,8 @@ public class GlassActivity extends AppCompatActivity {
         }
         finally{
             try {
-                bm = BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
+
+               bm = BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
                 fileDescriptor.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -633,5 +626,39 @@ public class GlassActivity extends AppCompatActivity {
         super.onResume();
         //drawPairGiven();
 
+    }
+
+    public int calculateInSampleSize(BitmapFactory.Options options) {
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int reqWidth = size.x;
+        int reqHeight = size.y;
+
+
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            int halfHeight = height;
+            int halfWidth = width;
+
+
+            while (halfHeight  > reqHeight && halfWidth  > reqWidth) {
+                halfHeight /= 2;
+                halfWidth /= 2;
+                System.out.println("Half Height: " + halfHeight);
+                System.out.println("Half Width: " + halfWidth);
+                inSampleSize *= 2;
+
+            }
+        }
+
+
+
+        return inSampleSize;
     }
 }
