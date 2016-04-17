@@ -94,14 +94,14 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="0dp"
             android:text="Continue"
             android:textColor="@color/white"
             android:layout_alignParentBottom="true"
             android:background="@drawable/button_selector"
             android:id="@+id/button"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="0dp"/>
 
 </RelativeLayout>

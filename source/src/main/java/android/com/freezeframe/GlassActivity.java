@@ -419,7 +419,6 @@ public class GlassActivity extends AppCompatActivity {
                 pb.setVisibility(View.INVISIBLE);
                 Toast.makeText(context, "Face Not Found", Toast.LENGTH_SHORT).show();
                 getImage(context);
-                Toast.makeText(context, "In On Post Execute", Toast.LENGTH_LONG).show();
             }
         }
 

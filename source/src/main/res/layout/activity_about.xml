@@ -10,24 +10,23 @@ tools:context="android.com.freezeframe.AboutActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/faded6"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp">
+
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="#404040"
                 android:text="Freeze Frame was created to provide the user with a way to “try on” multiple pairs of glasses without having to step foot into a store. The user takes a straight forward picture of their face and then our software custom fits our inventory of glasses to fit the users face as if they were in a store trying on the frames. Once the user finds a frame he/she likes, the user can add the frames to cart for checkout and purchase. The user must know their prescription if they wish to purchase from our store."
-                android:textSize="22dp"
-                android:textAlignment="center"
+                android:textSize="22sp"
+                android:gravity="left"
                 android:layout_gravity="center_horizontal"
-                android:id="@+id/textView1"
+                android:id="@+id/about"
                 android:layout_marginTop="5dp" />
 
             <TextView
@@ -35,8 +34,8 @@ tools:context="android.com.freezeframe.AboutActivity">
                 android:layout_height="wrap_content"
                 android:textColor="@color/aluminum"
                 android:text="Developed by Liam Plefka, Alex Gannon, Justin Yu, Steven Murtaugh, and Evan Kathawa"
-                android:textSize="16dp"
-                android:id="@+id/textView2"
+                android:textSize="12dp"
+                android:id="@+id/bottom"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -45,5 +44,11 @@ tools:context="android.com.freezeframe.AboutActivity">
 
         </LinearLayout>
     </ScrollView>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/faded6"
+        android:scaleType="fitXY"/>
 
 </RelativeLayout>
